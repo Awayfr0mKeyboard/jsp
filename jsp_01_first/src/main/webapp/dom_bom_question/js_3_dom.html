@@ -30,9 +30,31 @@
     	   
     	   dd.value = null;
     	   dd.focus();
-    	   
        }
        
+       /*
+       		document.getElementById("addTextButton").onclick = function() {
+				let textInput = document.querySelector("#textInput").value;
+				let text = textInput.value;
+				
+				if (text.length == 0) { // text 변수에 저장된 문자열 크기 length
+					alert("작성된 내용이 없습니다.");
+					textInput.focus();
+					return false;
+				}
+				
+				// 작성된 내용이 존재
+				let newParagraph = document.createElement("p");
+				newParagraph.innerText = text;
+				
+				let container = document.getElementById("textContainer");
+				// 태그 요소에 내부 요소 추가 - appendChild, append
+				container.append(newParagraph);
+				textInput.value = "";
+				textInput.focus();
+				
+			};
+       */
        
     </script>
 </body>
