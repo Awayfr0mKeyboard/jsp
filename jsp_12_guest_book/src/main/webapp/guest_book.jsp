@@ -40,11 +40,49 @@
 	</form>
 	<%@ page import="java.sql.*, utils.*" %>
 	<%
-		Connection conn = JDBCUtil.getConnection();
+		// 한 페이지에 보여줄 게시물 개수
+		int pageCount = 10;
 	
+		// 요청이 들어온 페이지, 사용자가 요청한 페이지 번호
+		// 별다른 페이지 요청이 없을 시에는 1 page 출력
+		int currentPage = 1;
+		
+		// 사용자가 확인할 목록 페이지를 page 라는 파라미터 이름으로 전달
+		String paramPage = request.getParameter("page");
+		if (paramPage != null) {
+			// 파라미터로 전달된 페이지 번호가 존재하면 해당 페이지 번호로 목록 검색
+			currentPage = Integer.parseInt(paramPage);
+		}
+		
+		out.println("현재 요청 페이지 : " + currentPage + "<br />");
+		
+		// 검색 범위는 0부터 시작
+		// LIMIT 0, pageCount;
+		// 사용자에게 입력받는 페이지 번호는 1부터 시작
+		// page == 1 == 0 == 10;
+		// page == 2 == 10 == 20;
+		// page == 3 == 20 == 30;
+		// (page - 1) * pageCount;
+		
+		// (1page - 1) * 10 == 0;
+		// (2page - 1) * 10 == 10;
+		// (3page - 1) * 10 == 20;
+		// ...
+		
+		int startRow = (currentPage - 1) * pageCount;
+		
+		Connection conn = JDBCUtil.getConnection();
+		/*
 		String sql = "SELECT num, guestName, message FROM guestBook ORDER BY num DESC";
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
+		*/
+	
+		String sql = "SELECT num, guestName, message FROM guestBook ORDER BY num DESC LIMIT ?, ?";
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		pstmt.setInt(1, startRow);
+		pstmt.setInt(2, pageCount);
+		ResultSet rs = pstmt.executeQuery();
 	%>
 	
 	<hr />
@@ -75,8 +113,101 @@
 			JDBCUtil.close(rs);
 			JDBCUtil.close(stmt);
 			*/
-			JDBCUtil.close(rs,stmt,conn);
+			JDBCUtil.close(rs,pstmt,conn);
+			// 역순으로 자원 해제
 		%>
+		<!-- 페이지 이동 번호 출력 -->
+		<%
+			// guestBook table 에 등록된 전체 행(게시물)의 개수
+			sql = "SELECT count(*) FROM guestBook";
+			conn = JDBCUtil.getConnection();
+			Statement stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			// 전체 게시물 개수를 저장할 변수
+			int totalCount = 0;
+			if (rs.next()) {
+				totalCount = rs.getInt(1);
+			}
+			
+			out.println("전체 게시물 개수 : " + totalCount + "<br />");
+			JDBCUtil.close(rs, stmt, conn);
+			
+			int maxPage = (totalCount - 1) / pageCount + 1;
+			out.println("최대 페이지 : " + maxPage + "<br />");
+			// 32 :         32 / 10 == 3.2  == 3 + 1  == 4
+			// 130 :       130 / 10 == 13   == 13 + 1 == 14
+			// 130 : (130 - 1) / 10 == 12.9 == 12 + 1 == 13
+			// 130 : (129 - 1) / 10 == 12.8 == 12 + 1 == 13
+			// 130 : (121 - 1) / 10 == 12   == 12 + 1 == 13
+			//						3.2   (소수점 자리 올림)
+			maxPage = (int)Math.ceil((double)totalCount / pageCount);
+			out.println("최대 페이지 : " + maxPage + "<br />");
+			
+			// 현재 요청 페이지에서 보여줄 시작 페이지 번호
+			int startPage = 0;
+			// 현재 요청 페이지에서 보여줄 마지막 페이지 번호
+			int endPage = 0;
+			// 한 번에 보여줄 페이지 번호 개수
+			int displayPageNum = 5;
+			
+			// 1 ~ 5 page 요청
+			// [1][2][3][4][5]
+			// 6 ~ 10 page 요청
+			// [6][7][8][9][10]
+			// ...
+			// 시작 페이지 번호부터 구하기
+			startPage = (currentPage - 1) / displayPageNum * displayPageNum + 1;
+			// 1 ~ 5 == 1
+			// 1page (1 - 1) / 5 * 5 + 1; == 1
+			// 5page (5 - 1) / 5(0.8) == (0 * 5) == 0 + 1 == 1;
+			// 6page (6 - 1) / 5(1) == (1 * 5) == 5 + 1 == 6; 
+			
+			// 출력할 마지막 페이지 번호
+			endPage = startPage + (displayPageNum - 1);
+			
+			// endPage 가 maxPage 보다 크면 이동할 수 없는 페이지 번호가 출력
+			if (endPage > maxPage) {
+				endPage = maxPage;
+			}
+		%>
+		
+		<tr style="width:100%">
+			<th>
+				<!-- 사용자가 요청한 출력된 현재 페이지가 1페이지가 아니면 출력 -->
+				<%if (currentPage != 1) { %>
+					<a href="guest_book.jsp?page=1">[처음]</a>
+				<%} %>
+				
+				<%if (startPage != 1) { %>
+					<a href="guest_book.jsp?page=<%= startPage - 1%>">[이전]</a>
+				<%} %>
+				
+				<!-- 이동 가능한 페이지 번호 출력 -->
+				<%for (int i = startPage; i <= endPage; i++) { %>
+					<a href="guest_book.jsp?page=<%=i%>">[<%= i %>]</a>
+				<%} %>
+				
+				<%if (endPage < maxPage) { %>
+					<a href="guest_book.jsp?page=<%= endPage + 1%>">[다음]</a>
+				<%} %>
+				
+				<!-- 마지막 페이지 이동 -->
+				<%if (currentPage < maxPage) { %>
+					<a href="guest_book.jsp?page=<%= maxPage%>">[마지막]</a>
+				<%} %>
+			</th>
+		</tr>
 	</table>
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
 </body>
 </html>
