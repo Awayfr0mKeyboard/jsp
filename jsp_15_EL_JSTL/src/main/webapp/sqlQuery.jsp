@@ -15,7 +15,7 @@
 	user="digital"
 	password="1234" />
 
-<s:query var="rs" dataSource="${conn}"
+<s:query var="rs" dataSource="java/MySQLDB"
 		sql = "SELECT * FROM test_member ORDER BY num DESC"/>
 		
 <%--
@@ -28,6 +28,11 @@
 <c:choose>
 	<c:when test="${rs.rowCount > 0}">
 		<h2>등록된 회원정보가 존재함 - ${rs.rowCount}</h2>
+		<c:forEach var="m" items="${rs.rows}">
+			${m.num} - ${m.id} - ${m.pass} - ${m.addr} - ${m.phone} - ${m['gender']} - ${m['age']}
+			- <a href="sqlUpdate.jsp?num=${m.num}">수정</a> | <a href="sqlDelete.jsp?num=${m.num}">삭제</a>
+			<br />
+		</c:forEach>
 	</c:when>
 	<c:otherwise>
 		<h2>검색된 정보가 없습니다.</h2>

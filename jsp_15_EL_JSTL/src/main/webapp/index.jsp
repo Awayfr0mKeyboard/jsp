@@ -13,5 +13,7 @@
 	<a href="jstlFmtForm.jsp">JSTL formatter</a> <br />
 	<a href="jstlSQL.jsp">JSTL SQL</a> <br />
 	<a href="sqlQuery.jsp">JSTL SQL Query</a> <br />
+	<a href="sqlDBCP.jsp">Database Connection Pool</a> <br />
+	<a href="sqlFunctions.jsp">SQL Functions</a> <br />
 </body>
 </html>
