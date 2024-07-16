@@ -25,7 +25,7 @@
 			<c:otherwise>
 				<script>
 					alert("잘못된 정보입니다. 확인 후 요청해주세요.");
-					location.replace('sqlUdate.jsp');
+					location.replace('sqlUpdate.jsp');
 				</script>
 			</c:otherwise>
 		</c:choose>
