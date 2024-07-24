@@ -10,7 +10,7 @@
 <body>
 	<h1>게시물 삭제</h1>
 	<form action="board_delete_submit.jsp" method="post">
-		<input type="hidden" name="board_num" value=""/>
+		<input type="hidden" name="board_num" value="${param.board_num}"/>
 		비밀번호 : <input type="password" name="board_pass"/>
 		<input type="submit" value="삭제"/>
 	</form>
