@@ -6,7 +6,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<a href="test">test</a>
+	<a href="test">test</a> <br />
 	<a href="test1?test=hello">test1</a>
+	
+	<%
+		response.sendRedirect("test");
+	%>
 </body>
 </html>

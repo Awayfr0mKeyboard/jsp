@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS mvc_member (
 	regdate TIMESTAMP DEFAULT now(),		-- 회원 가입일
 	updatedate TIMESTAMP DEFAULT now()		-- 회원정보 수정 시간
 );
+
+SELECT * FROM mvc_member;
