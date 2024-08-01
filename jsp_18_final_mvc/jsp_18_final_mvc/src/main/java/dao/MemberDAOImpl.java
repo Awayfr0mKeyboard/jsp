@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import dto.MemberDTO;
 
@@ -65,14 +64,11 @@ public class MemberDAOImpl implements MemberDAO {
 		setConnection();
 		
 		// 중복 아이디 확인
-		String sql = "SELECT * FROM mvc_member WHERE id = ?"
-					+ " UNION "
-					+ "SELECT * FROM mvc_member_backup WHERE id = ?";
+		String sql = "SELECT * FROM mvc_member WHERE id = ?";
 		try {
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, member.getId());
-			pstmt.setString(2, member.getId());
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
@@ -163,7 +159,8 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public boolean memberUpdate(MemberDTO member) {
 		this.setConnection();
-		String sql = "UPDATE mvc_member SET pass = ?, name = ?, age = ?, gender = ?, updatedate = now() WHERE id = ?";
+		String sql = "UPDATE mvc_member SET pass = ?, name = ?, age = ?, gender = ?, "
+				   + "updatedate = now() WHERE id = ? ";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -175,13 +172,13 @@ public class MemberDAOImpl implements MemberDAO {
 			
 			int result = pstmt.executeUpdate();
 			
-			if (result == 1) return true;
+			if(result == 1) return true;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			this.close();
 		}
-		
 		return false;
 	}
 
@@ -189,47 +186,20 @@ public class MemberDAOImpl implements MemberDAO {
 	public boolean deleteMember(int num) {
 		this.setConnection();
 		
+		String sql = "DELETE FROM mvc_member WHERE num = ?";
+		
 		try {
-			String sql = "SELECT * FROM mvc_member WHERE num = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
+			int result = pstmt.executeUpdate();
 			
-			if(rs.next()) {
-				String id = rs.getString("id");
-				String pass = rs.getString("pass");
-				String name = rs.getString("name");
-				int age = rs.getInt("age");
-				String gender = rs.getString("gender");
-				Timestamp regdate = rs.getTimestamp("regdate");
-				
-				sql = "INSERT INTO mvc_member_backup VALUES(?, ?, ?, ?, ?, ?, ?, now())";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, num);
-				pstmt.setString(2, id);
-				pstmt.setString(3, pass);
-				pstmt.setString(4, name);
-				pstmt.setInt(5, age);
-				pstmt.setString(6, gender);
-				pstmt.setTimestamp(7, regdate);
-				
-				int result = pstmt.executeUpdate();
-				
-				if(result == 1) {
-					sql = "DELETE FROM mvc_member WHERE num = ?";
-					pstmt = conn.prepareStatement(sql);
-					pstmt.setInt(1, num);
-					result = pstmt.executeUpdate();
-					
-					if(result == 1) return true;
-				}
-			}
+			if(result == 1) return true;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
+		}finally {
 			this.close();
 		}
-		
 		return false;
 	}
 
@@ -240,6 +210,7 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		String sql = "SELECT * FROM mvc_member WHERE id = ?";
 		
+		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
@@ -247,23 +218,27 @@ public class MemberDAOImpl implements MemberDAO {
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				member = new MemberDTO(
-						rs.getInt(1),			// num
-						rs.getString(2),		// id
-						rs.getString(3),		// pass
-						rs.getString(4),		// name
-						rs.getInt(5),			// age
-						rs.getString(6),		// gender
-						rs.getTimestamp(7),		// regdate
-						rs.getTimestamp(8)		// updatedate
+					rs.getInt(1),				// num
+					rs.getString(2),			// id
+					rs.getString(3),			// pass
+					rs.getString(4),			// name
+					rs.getInt(5),				// age
+					rs.getString(6),			// gender
+					rs.getTimestamp(7),			// regdate
+					rs.getTimestamp(8)			// updatedate
 				);
 			}
- 		} catch (SQLException e) {
+			
+		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			this.close();
 		}
 		
-		return null;
+		return member;
 	}
 
 }
+
+
+
