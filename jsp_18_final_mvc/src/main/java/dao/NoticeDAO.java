@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import util.PageMaker;
 import vo.NoticeVO;
 
+/**
+ * notice_board table 관련 요청 처리
+ * notice_board DataBase Access Object
+ */
 public interface NoticeDAO {
 	
 	/**

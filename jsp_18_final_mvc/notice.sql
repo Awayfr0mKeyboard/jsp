@@ -26,4 +26,22 @@ SELECT count(*) FROM notice_board;
 INSERT INTO notice_board 
 VALUES(null,'공지','최기근','장난입니다.','내용이 없습니다.내용이 없습니다.',now());
 
+-- 전체 게시물 검색
+SELECT * FROM notice_board ORDER BY notice_num DESC;
 
+-- 특정 범위만큼 검색
+SELECT * FROM notice_board ORDER BY notice_num DESC LIMIT 10 OFFSET 0;
+SELECT * FROM notice_board ORDER BY notice_num DESC LIMIT 0, 10;
+
+SELECT 'A' + 'B' FROM DUAL;
+
+SELECT 1 + 2 FROM DUAL;
+
+-- LIKE 절 pattern : _ , %
+SELECT * FROM notice_board WHERE notice_title LIKE '%서울%';
+
+-- setString(1, "서울")
+-- SELECT * FROM notice_board WHERE notice_title LIKE '%+'서울'+%';
+SELECT * FROM notice_board 
+WHERE notice_title LIKE CONCAT('%', '서울', '%');
+WHERE notice_author LIKE CONCAT('%', '서울', '%');
