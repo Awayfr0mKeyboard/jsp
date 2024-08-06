@@ -15,6 +15,10 @@ public class PageMaker {
 
 	Criteria cri; // 게시물 검색 정보
 
+	public PageMaker() {
+		cri = new Criteria();
+	}
+	
 	public void calcPaging() {
 
 		endPage = (int) Math.ceil(cri.getPage() / (double) displayPageNum) * displayPageNum;
@@ -95,6 +99,7 @@ public class PageMaker {
 
 	public void setDisplayPageNum(int displayPageNum) {
 		this.displayPageNum = displayPageNum;
+		calcPaging();
 	}
 
 	public Criteria getCri() {
@@ -103,6 +108,7 @@ public class PageMaker {
 
 	public void setCri(Criteria cri) {
 		this.cri = cri;
+		calcPaging();
 	}
 	
 	public String encoding(String keyword) {
@@ -115,6 +121,17 @@ public class PageMaker {
 			e.printStackTrace();
 			return "";
 		}
+	}
+	
+	// 매개변수로 이동할 페이지 번호를 전달 받아
+	// get 방식의 쿼리 스트링을 문자열로 반환
+	public String makeQuery(int page) {
+		// ?page=2&perPageNum=15
+		// ?page=${i}&perPageNum=${pageMaker.cri.perPageNum}
+		String queryString = "?";
+		queryString += "page="+page;
+		queryString += "&perPageNum="+cri.getPerPageNum();
+		return queryString;
 	}
 
 	@Override

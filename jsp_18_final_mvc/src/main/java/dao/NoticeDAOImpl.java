@@ -31,7 +31,6 @@ public class NoticeDAOImpl implements NoticeDAO {
 		try {
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, notice.getNotice_category());
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
