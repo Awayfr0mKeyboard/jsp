@@ -56,9 +56,13 @@ CREATE TABLE qna_board(
 	qna_writer_num INT NOT NULL,							-- 작성자 회원번호
 	qna_readcount INT DEFAULT 0,							-- 조회 수
 	qna_date TIMESTAMP DEFAULT NOW()						-- 게시글 작성시간
+	
 );
 
 ALTER TABLE qna_board ADD COLUMN qna_re_ref INT NOT NULL DEFAULT 0;  -- 원본글 번호
+
+ALTER TABLE qna_board 
+ADD COLUMN qna_re_seq INT NOT NULL DEFAULT 0 AFTER qna_re_ref;		-- 답변글 정렬 번호 
 
 DESC qna_board;
 
@@ -73,12 +77,15 @@ SELECT
 	Q.qna_writer_num AS qnaWriterNum,
 	Q.qna_readcount AS qnaReadCount,
 	Q.qna_date AS qnaDate,
-	Q.qna_re_ref AS qnaReRef
+	Q.qna_re_ref AS qnaReRef,
+	Q.qna_re_seq AS qnaReSeq
 FROM qna_board AS Q JOIN mvc_member AS M
 ON Q.qna_writer_num = M.num;
 
 -- qnaReRef column의 번호를 게시글 번호로 수정
 UPDATE v_qna_board SET qnaReRef = qnaNum;
+
+commit;
 
 
 INSERT INTO v_qna_board(qnaTitle, qnaContent, qnaWriterNum)

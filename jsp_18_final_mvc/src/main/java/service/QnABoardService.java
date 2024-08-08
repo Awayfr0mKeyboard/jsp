@@ -77,6 +77,7 @@ public class QnABoardService {
 	 */
 	public void boardReply(HttpServletRequest request) {
 		int qnaReRef = Integer.parseInt(request.getParameter("qnaReRef"));
+		int qnaReSeq = Integer.parseInt(request.getParameter("qnaReSeq"));
 		int qnaWriterNum = Integer.parseInt(request.getParameter("qnaWriterNum"));
 		String qnaTitle = request.getParameter("qnaTitle");
 		String qnaContent = request.getParameter("qnaContent");
@@ -86,6 +87,7 @@ public class QnABoardService {
 		vo.setQnaTitle(qnaTitle);
 		vo.setQnaContent(qnaContent);
 		vo.setQnaReRef(qnaReRef);
+		vo.setQnaReSeq(qnaReSeq);
 		
 		dao.boardReply(vo);
 	}

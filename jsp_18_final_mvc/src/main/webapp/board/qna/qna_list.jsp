@@ -4,13 +4,13 @@
 <section>
 	<table class="List">
 		<tr>
-			<th colspan="6">
+			<th colspan="7">
 				<h1>질문과 답변 목록</h1>
 			</th>
 		</tr>
 		<c:if test="${!empty member}">
 			<tr>
-				<th colspan="6">
+				<th colspan="7">
 					<a href="boardWrite.qna">질문 작성하러 가기</a>
 				</th>
 			</tr>
@@ -22,6 +22,7 @@
 			<th>작성시간</th>
 			<th>조회수</th>
 			<th>Ref</th>
+			<th>정렬</th>
 		</tr>
 		<c:choose>
 			<c:when test="${!empty boardList}">
@@ -36,6 +37,7 @@
 						<td>${board.qnaDate}</td>
 						<td>${board.qnaReadCount}</td>
 						<td>${board.qnaReRef}</td>
+						<td>${board.qnaReSeq}</td>
 					</tr>
 				</c:forEach>
 				<!-- 페이징 블럭 -->
@@ -43,7 +45,7 @@
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<th colspan="6">등록된 게시물이 없습니다.</th>
+					<th colspan="7">등록된 게시물이 없습니다.</th>
 				</tr>
 			</c:otherwise>
 		</c:choose>	
