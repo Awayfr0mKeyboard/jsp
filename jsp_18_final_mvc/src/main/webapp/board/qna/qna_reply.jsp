@@ -4,9 +4,10 @@
 <section>
 	<form action="boardReplySubmit.qna" method="POST">
 		<!-- 로그인된 사용자 == 게시글 작성자의 회원 번호 파라미터로 전달 -->
-		<input type="hidden" name="qnaWriterNum" value="${member.num}">
+		<input type="hidden" name="qnaWriterNum" value="${member.num}" />
 		<input type="hidden" name="qnaReRef" value="${board.qnaReRef}" />
 		<input type="hidden" name="qnaReSeq" value="${board.qnaReSeq}" />
+		<input type="hidden" name="qnaReLev" value="${board.qnaReLev}" />
 		<table>
 			<tr>
 				<th colspan="2"><h1>답변글 작성</h1></th>
